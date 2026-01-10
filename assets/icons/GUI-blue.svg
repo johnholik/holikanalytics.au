@@ -1,0 +1,25 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Screen Body -->
+  <rect x="12" y="16" width="104" height="72" rx="8" fill="#4A90E2" stroke="currentColor" stroke-width="3"></rect>
+
+  <!-- GUI Elements (windows/buttons) -->
+  <!-- Header bar -->
+  <rect x="20" y="26" width="88" height="10" rx="2" fill="#FFFFFF" fill-opacity="0.9"></rect>
+  <!-- Big content box -->
+  <rect x="20" y="40" width="88" height="30" rx="3" fill="#FFFFFF" fill-opacity="0.7"></rect>
+  <!-- Smaller buttons -->
+  <circle cx="30" cy="31" r="3" fill="#FF5F57"></circle>
+  <circle cx="40" cy="31" r="3" fill="#FEBC2E"></circle>
+  <circle cx="50" cy="31" r="3" fill="#28C940"></circle>
+
+  <!-- Stand -->
+  <rect x="48" y="90" width="32" height="8" rx="2" fill="#333" fill-opacity="0.8"></rect>
+
+  <!-- Base -->
+  <rect x="36" y="100" width="56" height="6" rx="3" fill="#333" fill-opacity="0.8"></rect>
+
+  <!-- Text Label -->
+  <text x="64" y="124" font-family="Arial, sans-serif" font-size="18" font-weight="600" text-anchor="middle" fill="currentColor">
+    GUI
+  </text>
+</svg>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects — Holik Analytics</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header>
+  <div class="header-inner" role="banner">
+    <h1 class="header-title"><a href="index.html">Holik Analytics</a></h1>
+
+    <div class="header-controls">
+      <button id="theme-toggle" aria-label="Toggle Dark Mode">
+        <img id="theme-icon" src="assets/icons/moon.svg" alt="Theme Toggle" width="24" height="24">
+      </button>
+
+      <button id="mobile-menu-button" class="mobile-menu-toggle" aria-expanded="false" aria-controls="mobile-nav">
+        ☰
+      </button>
+    </div>
+
+    <nav id="desktop-nav" class="nav-links" aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="services.html">Services</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <nav id="mobile-nav" class="nav-links" aria-label="Mobile navigation">
+      <a href="index.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="services.html">Services</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- PAGE TITLE -->
+  <h1 class="page-title">Research Support<br>
+    <span class="small-text">Projects Portfolio</span>
+  </h1>
+
+  <!-- PROJECT 1 TEMPLATE -->
+  <section class="section reveal">
+    <div class="section-content">
+
+      <div class="section-image">
+        <img class="large-img" src="assets/images/2kh_high_pass.png" alt="High pass filter visualization" />
+      </div>
+
+      <div class="section-text">
+        <h2>Audio Processing Workflow Improvements</h2>
+        <ul>
+          <li>Audio waveforms required to be parsed, measured and edited</li>
+          <li>Developed Python scripts to automate </li>
+          <li>Built GUI tool for timestamping & annotation</li>
+        </ul>
+
+        <div class="widgets">
+          <img src="assets/icons/python-colour.svg" alt="Python" class="widget-icon">
+          <img src="assets/icons/python-happy.png" alt="Python" class="widget-icon">
+          <img src="assets/icons/github-mark-white.svg" alt="GitHub" class="widget-icon">
+          <img src="assets/icons/GUI-blue-large-white.svg" alt="GUI" class="widget-icon">
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROJECT 2 (placeholder) -->
+  <section class="section reveal">
+    <div class="section-content">
+
+      <div class="section-image">
+        <img class="large-img" src="assets/images/2kh_high_pass.png" alt="High pass filter visualization" />
+      </div>
+
+      <div class="section-text">
+        <h2>Locally executed Automatic Speech Transcription and Speaker Identification</h2>
+        <ul>
+          <li>The dataset comprised videos of patient interviews.</li>
+          <li>These were sensitive and online transcription was to be avoided.</li>
+          <li>I built a local-machine solution using OpenAI's <a href="https://openai.com/index/whisper/" target="_blank" rel="noopener">  Whisper</a> model, incorporating Automatic Speech Recognition (ASR), timestamping and diarisation by identifying multiple speakers.</li>
+        </ul>
+        <div class="widgets">
+          <img src="assets/icons/python-colour.svg" alt="Python" class="widget-icon">
+          <img src="assets/icons/python-happy.png" alt="Python" class="widget-icon">
+          <img src="assets/icons/github-mark-white.svg" alt="GitHub" class="widget-icon">
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-row">
+    <!-- Left: Name -->
+    <div class="footer-left">
+      John Holik
+    </div>
+
+    <!-- Right: Social Icons -->
+    <div class="footer-center">
+      <a href="https://github.com/johnholik" target="_blank" aria-label="GitHub">
+        <img src="assets/icons/github-mark.svg" alt="GitHub" />
+      </a>
+      <a href="https://orcid.org/0009-0009-9741-0025" target="_blank" aria-label="ORCID">
+        <img src="assets/icons/orcid-1.png" alt="ORCID" />
+      </a>
+      <a href="https://www.linkedin.com/in/john-holik-medical-physics/" target="_blank" aria-label="LinkedIn">
+        <img src="assets/icons/linkedin-InBug-Black.png" alt="LinkedIn" />
+      </a>
+    </div>
+  </div>
+</footer>
+
+<!-- External JS -->
+<script src="js/scripts.js"></script>
+
+<button id="back-to-top" aria-label="Back to Top" title="Back to Top">
+  ↑
+</button>
+
+</body>
+</html>

@@ -55,13 +55,198 @@ document.addEventListener('DOMContentLoaded', () => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('in-view');
-        // Stop observing once the animation has played
         revealObserver.unobserve(entry.target);
       }
     });
   }, {
-    threshold: 0.15 // Triggers when 15% of the element is visible
+    threshold: 0.15
   });
 
   revealElements.forEach(el => revealObserver.observe(el));
+
+  /* --- Poster Click-to-Lock Logic (with ESC + swipe close) --- */
+  let activePoster = null;
+
+  document.querySelectorAll('.poster-trigger').forEach(trigger => {
+    trigger.addEventListener('click', e => {
+      const preview = trigger.querySelector('.poster-preview');
+      if (!preview) return;
+
+      preview.classList.add('locked');
+      activePoster = preview;
+      e.stopPropagation();
+    });
+  });
+
+  document.querySelectorAll('.poster-preview').forEach(preview => {
+
+    // Click closes
+    preview.addEventListener('click', () => {
+      preview.classList.remove('locked');
+      activePoster = null;
+    });
+
+    // Swipe close
+    let touchStartX = 0;
+
+    preview.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    preview.addEventListener('touchend', e => {
+      const touchEndX = e.changedTouches[0].screenX;
+      const diff = Math.abs(touchEndX - touchStartX);
+
+      if (diff > 60) {
+        preview.classList.remove('locked');
+        activePoster = null;
+      }
+    });
+  });
+
+  // ESC key closes
+  document.addEventListener('keydown', e => {
+    if (e.key === "Escape" && activePoster) {
+      activePoster.classList.remove('locked');
+      activePoster = null;
+    }
+  });
+
+document.querySelectorAll('.poster-preview img').forEach(img => {
+
+  let scale = 1;
+  let isDragging = false;
+  let startX = 0, startY = 0;
+  let translateX = 0, translateY = 0;
+
+  function applyTransform() {
+    img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+  }
+
+  // Click zoom toggle
+  img.addEventListener('click', e => {
+    e.stopPropagation();
+
+    if (scale === 1) {
+      scale = 2;
+      img.classList.add('zoomed');
+    } else {
+      scale = 1;
+      translateX = 0;
+      translateY = 0;
+      img.classList.remove('zoomed');
+    }
+
+    applyTransform();
+  });
+
+  // Wheel zoom
+  img.addEventListener('wheel', e => {
+    e.preventDefault();
+
+    scale += e.deltaY * -0.001;
+    scale = Math.min(Math.max(1, scale), 3);
+
+    if (scale === 1) {
+      translateX = 0;
+      translateY = 0;
+    }
+
+    applyTransform();
+  });
+
+  // Drag pan
+  img.addEventListener('mousedown', e => {
+    if (scale === 1) return;
+
+    isDragging = true;
+    startX = e.clientX - translateX;
+    startY = e.clientY - translateY;
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+
+    translateX = e.clientX - startX;
+    translateY = e.clientY - startY;
+    applyTransform();
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+
+});
+
+  /* --- ORCID Publications Fetch --- */
+  const ORCID_ID = "0009-0009-9741-0025";
+  const orcidList = document.getElementById("orcid-journal-list");
+
+  if (orcidList) {
+    fetch(`https://pub.orcid.org/v3.0/${ORCID_ID}/works`, {
+      headers: { "Accept": "application/json" }
+    })
+    .then(res => res.json())
+    .then(async data => {
+
+      orcidList.innerHTML = "";
+      const works = data.group || [];
+
+      for (const group of works) {
+
+        const summary = group["work-summary"][0];
+        const putCode = summary["put-code"];
+
+        const res = await fetch(`https://pub.orcid.org/v3.0/${ORCID_ID}/work/${putCode}`, {
+          headers: { "Accept": "application/json" }
+        });
+
+        const work = await res.json();
+
+		/* ---- FILTER: journals only (allow multiple types) ---- */
+		const allowedTypes = [
+		  "conference-paper",
+		  "journal-article",
+		  "review",
+		  "research-article"
+		];
+
+		if (!allowedTypes.includes(work.type)) {
+		  continue; // skip conference papers, book chapters, etc.
+		}
+		/* ---------------------------------------------------- */
+
+        const title = work.title?.title?.value || "Untitled";
+        const year = work["publication-date"]?.year?.value || "";
+        const journal = work["journal-title"]?.value || "";
+
+        const contributors = work.contributors?.contributor || [];
+
+        let authors = contributors.map(c => {
+          const name = c["credit-name"]?.value || "";
+          if (!name) return "";
+
+          if (name.toLowerCase().includes("holik")) {
+            return `<strong>${name}</strong>`;
+          }
+          return name;
+        }).filter(Boolean);
+
+        const authorText = authors.length ? authors.join(", ") + ". " : "";
+
+        const li = document.createElement("li");
+        li.innerHTML = `${authorText}${year ? "(" + year + "). " : ""}${title}. <em>${journal}</em>.`;
+
+        orcidList.appendChild(li);
+      }
+
+      if (!works.length) {
+        orcidList.innerHTML = "<li>No publications found.</li>";
+      }
+    })
+    .catch(() => {
+      orcidList.innerHTML = "<li>Unable to load publications.</li>";
+    });
+  }
+
 });

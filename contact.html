@@ -23,14 +23,14 @@
     </div>
 
     <nav id="desktop-nav" class="nav-links" aria-label="Main navigation">
-      <a href="index.html">Home</a>
+      <a href="index.html">About</a>
       <a href="projects.html">Projects</a>
       <a href="services.html">Services</a>
       <a href="contact.html">Contact</a>
     </nav>
 
     <nav id="mobile-nav" class="nav-links" aria-label="Mobile navigation">
-      <a href="index.html">Home</a>
+      <a href="index.html">About</a>
       <a href="projects.html">Projects</a>
       <a href="services.html">Services</a>
       <a href="contact.html">Contact</a>
@@ -41,15 +41,23 @@
 <main>
 
 <!-- PAGE TITLE -->
-  <h1 class="page-title">Research Support<br>
-    <span class="small-text">Contact Me</span>
+  <h1 class="page-title">Data Science & Research Support<br>
+    <span class="small-text">Contact me</span>
   </h1>
+
+<!---
+  <p class="small-text" style="text-align:center; opacity:0.85; margin-top:-30px;">
+    Write to me at <br><strong>john(at)holikanalytics.au</strong><br> or use the form below:
+  </p>
+-->
 
 <section class="contact-section reveal">
   <!--<h2>Contact Me</h2>-->
 
-  <form class="contact-form" method="POST" action="https://formspree.io/f/your-endpoint">
+  <form class="contact-form" method="POST" action="https://formspree.io/f/xqeeabbn">
     <input type="hidden" name="_next" value="https://holikanalytics.au/success.html">
+    <input type="hidden" name="_subject" value="New Contact — Holik Analytics">
+	<input type="text" name="_gotcha" style="display:none">
     
     <label for="name">Name</label>
     <input type="text" id="name" name="name" placeholder="Your Name" required>
@@ -61,7 +69,7 @@
     <input type="text" id="phone" name="phone" placeholder="Optional">
 
     <label for="message">Message</label>
-    <textarea id="message" name="message" rows="6" placeholder="How can I help with your data?" required></textarea>
+    <textarea id="message" name="message" rows="6" placeholder="How can I help with your data and workflows?" required></textarea>
 
     <button type="submit">Send Message</button>
   </form>

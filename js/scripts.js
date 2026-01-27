@@ -74,55 +74,68 @@ document.addEventListener('DOMContentLoaded', () => {
     revealElements.forEach(el => revealObserver.observe(el));
   }
 
-  /* ===============================
-     Poster Preview Logic
-     - Click to lock
-     - ESC / click / swipe to close
-  =============================== */
-  let activePoster = null;
+/* ===============================
+   Poster Preview Logic
+   - Tap image = zoom
+   - Tap outside image = close
+   - ESC closes
+=============================== */
 
-  document.querySelectorAll('.poster-trigger').forEach(trigger => {
-    trigger.addEventListener('click', e => {
-      const preview = trigger.querySelector('.poster-preview');
-      if (!preview) return;
+let activePoster = null;
 
-      preview.classList.add('locked');
-      activePoster = preview;
-      e.stopPropagation();
-    });
+document.querySelectorAll('.poster-trigger').forEach(trigger => {
+  trigger.addEventListener('click', e => {
+    const preview = trigger.querySelector('.poster-preview');
+    if (!preview) return;
+
+    preview.classList.add('locked');
+    activePoster = preview;
+    e.stopPropagation();
   });
+});
 
-  document.querySelectorAll('.poster-preview').forEach(preview => {
+document.querySelectorAll('.poster-preview').forEach(preview => {
 
-    // Click closes
-    preview.addEventListener('click', () => {
-      preview.classList.remove('locked');
-      activePoster = null;
-    });
+  // CLICKING THE BACKGROUND CLOSES
+  preview.addEventListener('click', () => {
+    preview.classList.remove('locked');
+    activePoster = null;
 
-    // Swipe close (mobile)
-    let touchStartX = 0;
-
-    preview.addEventListener('touchstart', e => {
-      touchStartX = e.changedTouches[0].screenX;
-    });
-
-    preview.addEventListener('touchend', e => {
-      const diff = Math.abs(e.changedTouches[0].screenX - touchStartX);
-      if (diff > 60) {
-        preview.classList.remove('locked');
-        activePoster = null;
-      }
-    });
-  });
-
-  // ESC closes active poster
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && activePoster) {
-      activePoster.classList.remove('locked');
-      activePoster = null;
+    // Reset zoomed image if needed
+    const img = preview.querySelector('img');
+    if (img) {
+      img.style.transform = '';
+      img.classList.remove('zoomed');
     }
   });
+
+  // PREVENT IMAGE CLICKS FROM CLOSING
+  const img = preview.querySelector('img');
+  if (img) {
+    img.addEventListener('click', e => {
+      e.stopPropagation();
+    });
+  }
+});
+
+// ESC key closes
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && activePoster) {
+    activePoster.classList.remove('locked');
+    activePoster = null;
+  }
+});
+
+.poster-preview {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.poster-preview.locked {
+  opacity: 1;
+  pointer-events: auto;
+}
 
   /* ===============================
      Poster Image Zoom + Pan

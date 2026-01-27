@@ -126,17 +126,6 @@ document.addEventListener('keydown', e => {
   }
 });
 
-.poster-preview {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-}
-
-.poster-preview.locked {
-  opacity: 1;
-  pointer-events: auto;
-}
-
   /* ===============================
      Poster Image Zoom + Pan
   =============================== */

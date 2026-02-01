@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ===============================
-     Mobile Menu Toggle
+      Mobile Menu Toggle
   =============================== */
   const menuButton = document.getElementById('mobile-menu-button');
   const mobileNav  = document.getElementById('mobile-nav');
@@ -10,12 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
     menuButton.addEventListener('click', () => {
       mobileNav.classList.toggle('open');
       const expanded = menuButton.getAttribute('aria-expanded') === 'true';
-      menuButton.setAttribute('aria-expanded', String(!expanded));
+      menuButton.setAttribute('aria-expanded', String(!expanded));    
     });
   }
 
   /* ===============================
-     Dark Mode Toggle
+      Dark Mode Toggle
   =============================== */
   const themeToggle = document.getElementById('theme-toggle');
   const themeIcon   = document.getElementById('theme-icon');
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ===============================
-     Back to Top Button
+      Back to Top Button
   =============================== */
   const backToTopBtn = document.getElementById('back-to-top');
 
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ===============================
-     Scroll Reveal Animations
+      Scroll Reveal Animations
   =============================== */
   const revealElements = document.querySelectorAll('.reveal');
 
@@ -74,126 +74,143 @@ document.addEventListener('DOMContentLoaded', () => {
     revealElements.forEach(el => revealObserver.observe(el));
   }
 
-/* ===============================
-   Poster Preview Logic
-   - Tap image = zoom
-   - Tap outside image = close
-   - ESC closes
-=============================== */
+  /* ===============================
+      Poster Preview Logic
+      - Tap text = open
+      - Tap image = zoom/toggle
+      - Tap background/anywhere else = close
+  =============================== */
 
-let activePoster = null;
+  let activePoster = null;
 
-document.querySelectorAll('.poster-trigger').forEach(trigger => {
-  trigger.addEventListener('click', e => {
-    const preview = trigger.querySelector('.poster-preview');
-    if (!preview) return;
+  // Helper function to close any open poster
+  const closeActivePoster = () => {
+    if (activePoster) {
+      activePoster.classList.remove('locked');
+      const img = activePoster.querySelector('img');
+      if (img) {
+        img.style.transform = '';
+        img.classList.remove('zoomed');
+        // Reset the custom zoom properties we added to the element
+        img.dataset.scale = "1";
+        img.dataset.translateX = "0";
+        img.dataset.translateY = "0";
+      }
+      activePoster = null;
+    }
+  };
 
-    preview.classList.add('locked');
-    activePoster = preview;
-    e.stopPropagation();
+  // 1. OPEN LOGIC
+  document.querySelectorAll('.poster-trigger').forEach(trigger => {
+    trigger.addEventListener('click', e => {
+      const preview = trigger.querySelector('.poster-preview');
+      if (!preview) return;
+
+      // If clicking the text and it's not already open
+      if (!preview.classList.contains('locked')) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeActivePoster(); // Close any others first
+        preview.classList.add('locked');
+        activePoster = preview;
+      }
+    });
   });
-});
 
-document.querySelectorAll('.poster-preview').forEach(preview => {
-
-  // CLICKING THE BACKGROUND CLOSES
-  preview.addEventListener('click', () => {
-    preview.classList.remove('locked');
-    activePoster = null;
-
-    // Reset zoomed image if needed
-    const img = preview.querySelector('img');
-    if (img) {
-      img.style.transform = '';
-      img.classList.remove('zoomed');
+  // 2. CLOSE LOGIC (Clicking anywhere on the document)
+  document.addEventListener('click', (e) => {
+    if (activePoster) {
+      // If the click is NOT on the image itself, close it
+      if (!e.target.closest('.poster-preview img')) {
+        closeActivePoster();
+      }
     }
   });
 
-  // PREVENT IMAGE CLICKS FROM CLOSING
-  const img = preview.querySelector('img');
-  if (img) {
-    img.addEventListener('click', e => {
-      e.stopPropagation();
-    });
-  }
-});
-
-// ESC key closes
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && activePoster) {
-    activePoster.classList.remove('locked');
-    activePoster = null;
-  }
-});
+  // ESC key closes
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && activePoster) {
+      closeActivePoster();
+    }
+  });
 
   /* ===============================
-     Poster Image Zoom + Pan
+      Poster Image Zoom + Pan
   =============================== */
   document.querySelectorAll('.poster-preview img').forEach(img => {
-
-    let scale = 1;
+    // Store state on the element to prevent scope issues
+    img.dataset.scale = "1";
+    img.dataset.translateX = "0";
+    img.dataset.translateY = "0";
     let isDragging = false;
     let startX = 0, startY = 0;
-    let translateX = 0, translateY = 0;
 
     const applyTransform = () => {
       img.style.transform =
-        `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        `translate(${img.dataset.translateX}px, ${img.dataset.translateY}px) scale(${img.dataset.scale})`;
     };
 
-    // Click zoom toggle
+    // Zoom Toggle on Click
     img.addEventListener('click', e => {
-      e.stopPropagation();
+      e.stopPropagation(); // Prevents the 'document' click listener from closing it
 
+      let scale = parseFloat(img.dataset.scale);
+      
       if (scale === 1) {
-        scale = 2;
+        img.dataset.scale = "2";
         img.classList.add('zoomed');
       } else {
-        scale = 1;
-        translateX = 0;
-        translateY = 0;
+        img.dataset.scale = "1";
+        img.dataset.translateX = "0";
+        img.dataset.translateY = "0";
         img.classList.remove('zoomed');
       }
       applyTransform();
     });
 
-    // Wheel zoom
-    img.addEventListener('wheel', e => {
-      e.preventDefault();
-
-      scale += e.deltaY * -0.001;
-      scale = Math.min(Math.max(1, scale), 3);
-
-      if (scale === 1) {
-        translateX = 0;
-        translateY = 0;
-      }
-      applyTransform();
-    });
-
-    // Drag pan
+    // Drag / Pan Logic
     img.addEventListener('mousedown', e => {
-      if (scale === 1) return;
+      if (img.dataset.scale === "1") return;
       isDragging = true;
-      startX = e.clientX - translateX;
-      startY = e.clientY - translateY;
+      startX = e.clientX - parseFloat(img.dataset.translateX);
+      startY = e.clientY - parseFloat(img.dataset.translateY);
+      img.style.cursor = 'grabbing';
     });
 
     document.addEventListener('mousemove', e => {
       if (!isDragging) return;
-      translateX = e.clientX - startX;
-      translateY = e.clientY - startY;
+      img.dataset.translateX = (e.clientX - startX).toString();
+      img.dataset.translateY = (e.clientY - startY).toString();
       applyTransform();
     });
 
     document.addEventListener('mouseup', () => {
       isDragging = false;
+      if(img.classList.contains('zoomed')) img.style.cursor = 'grab';
+    });
+
+    // Touch support for Panning
+    img.addEventListener('touchstart', e => {
+        if (img.dataset.scale === "1") return;
+        isDragging = true;
+        startX = e.touches[0].clientX - parseFloat(img.dataset.translateX);
+        startY = e.touches[0].clientY - parseFloat(img.dataset.translateY);
+    }, {passive: true});
+
+    img.addEventListener('touchmove', e => {
+        if (!isDragging) return;
+        img.dataset.translateX = (e.touches[0].clientX - startX).toString();
+        img.dataset.translateY = (e.touches[0].clientY - startY).toString();
+        applyTransform();
+    }, {passive: true});
+
+    img.addEventListener('touchend', () => {
+        isDragging = false;
     });
   });
 
   /* ===============================
-     ORCID Publications Fetch
-     (Filtered types)
+      ORCID Publications Fetch
   =============================== */
   const ORCID_ID = '0009-0009-9741-0025';
   const orcidList = document.getElementById('orcid-journal-list');

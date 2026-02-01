@@ -308,6 +308,20 @@ footer {
   padding: 0 clamp(15px, 4vw, 20px);
 }
 
+/* Force three equal columns */
+.footer-left, .footer-middle, .footer-right {
+  flex: 1; 
+  display: flex;
+  align-items: center;
+}
+
+.footer-left { justify-content: flex-start; }
+.footer-middle { justify-content: center; } /* Perfect center */
+.footer-right { 
+  justify-content: flex-end; 
+  gap: clamp(10px, 3vw, 20px); 
+}
+
 .footer-center {
   display: flex;
   align-items: center;
@@ -753,11 +767,11 @@ footer {
   margin-left: 15px;
   cursor: pointer;
   color: var(--text);
-  opacity: 0.03; /* Hard to see by default */
+  opacity: 0.015; /* Hard to see by default */
   transition: opacity 0.5s ease, color 0.3s ease;  vertical-align: middle;
   display: flex;
   align-items: center;
-  filter: blur(0.3px); /* Slightly fuzzy to look like a smudge */
+  filter: blur(0.5px); /* Slightly fuzzy to look like a smudge */
 }
 
 #retro-toggle:hover {

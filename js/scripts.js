@@ -282,18 +282,17 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ===============================
     The Secret Retro Toggle
 =============================== */
-const retroBtn = document.getElementById('retro-toggle');
-const rootElement = document.documentElement;
+document.addEventListener('DOMContentLoaded', () => {
+  const retroBtn = document.getElementById('retro-toggle');
+  const rootElement = document.documentElement;
 
-// 1. Check if the user previously chose the retro skin
-if (localStorage.getItem('skin') === 'retro') {
-  rootElement.setAttribute('data-skin', 'retro');
-  retroBtn.classList.add('active');
-}
+  // Load saved preference
+  if (localStorage.getItem('skin') === 'retro') {
+    rootElement.setAttribute('data-skin', 'retro');
+    retroBtn?.classList.add('active');
+  }
 
-if (retroBtn) {
-  retroBtn.addEventListener('click', () => {
-    // Toggle the attribute on the <html> tag
+  retroBtn?.addEventListener('click', () => {
     const isRetro = rootElement.getAttribute('data-skin') === 'retro';
     
     if (isRetro) {
@@ -304,12 +303,9 @@ if (retroBtn) {
       rootElement.setAttribute('data-skin', 'retro');
       retroBtn.classList.add('active');
       localStorage.setItem('skin', 'retro');
-      
-      // Optional: Add a vintage "beep" sound if you want to go all out!
-      console.log("Terminal Mode Activated...");
     }
   });
-}
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   const retroBtn = document.getElementById('retro-toggle');

@@ -279,48 +279,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-/* ===============================
-    The Secret Retro Toggle
-=============================== */
-document.addEventListener('DOMContentLoaded', () => {
+  /* ===============================
+      Retro / 80s Theme Toggle
+  =============================== */
   const retroBtn = document.getElementById('retro-toggle');
   const rootElement = document.documentElement;
-
-  // Load saved preference
-  if (localStorage.getItem('skin') === 'retro') {
-    rootElement.setAttribute('data-skin', 'retro');
-    retroBtn?.classList.add('active');
-  }
-
-  retroBtn?.addEventListener('click', () => {
-    const isRetro = rootElement.getAttribute('data-skin') === 'retro';
-    
-    if (isRetro) {
-      rootElement.removeAttribute('data-skin');
-      retroBtn.classList.remove('active');
-      localStorage.setItem('skin', 'default');
-    } else {
-      rootElement.setAttribute('data-skin', 'retro');
-      retroBtn.classList.add('active');
-      localStorage.setItem('skin', 'retro');
-    }
-  });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  const retroBtn = document.getElementById('retro-toggle');
-  const rootElement = document.documentElement;
-
-  // Initialize skin from storage
-  if (localStorage.getItem('skin') === 'retro') {
-    rootElement.setAttribute('data-skin', 'retro');
-    if(retroBtn) retroBtn.classList.add('active');
-  }
 
   if (retroBtn) {
+    // Initialise from storage
+    if (localStorage.getItem('skin') === 'retro') {
+      rootElement.setAttribute('data-skin', 'retro');
+      retroBtn.classList.add('active');
+    }
+
     retroBtn.addEventListener('click', () => {
       const isRetro = rootElement.getAttribute('data-skin') === 'retro';
-      
+
       if (isRetro) {
         rootElement.removeAttribute('data-skin');
         retroBtn.classList.remove('active');
@@ -329,8 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
         rootElement.setAttribute('data-skin', 'retro');
         retroBtn.classList.add('active');
         localStorage.setItem('skin', 'retro');
-        console.log("Skin: 1984 Terminal Mode Active.");
+        console.log('Skin: 1984 Terminal Mode Active.');
       }
     });
   }
-});

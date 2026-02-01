@@ -310,3 +310,31 @@ if (retroBtn) {
     }
   });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const retroBtn = document.getElementById('retro-toggle');
+  const rootElement = document.documentElement;
+
+  // Initialize skin from storage
+  if (localStorage.getItem('skin') === 'retro') {
+    rootElement.setAttribute('data-skin', 'retro');
+    if(retroBtn) retroBtn.classList.add('active');
+  }
+
+  if (retroBtn) {
+    retroBtn.addEventListener('click', () => {
+      const isRetro = rootElement.getAttribute('data-skin') === 'retro';
+      
+      if (isRetro) {
+        rootElement.removeAttribute('data-skin');
+        retroBtn.classList.remove('active');
+        localStorage.setItem('skin', 'default');
+      } else {
+        rootElement.setAttribute('data-skin', 'retro');
+        retroBtn.classList.add('active');
+        localStorage.setItem('skin', 'retro');
+        console.log("Skin: 1984 Terminal Mode Active.");
+      }
+    });
+  }
+});

@@ -86,6 +86,93 @@ header {
 #theme-toggle {
   background: none;
   border: none;
+<<<<<<< HEAD
+=======
+  background-color: var(--accent);
+  margin: 0 auto;
+  border-radius: 2px;
+}
+
+.language-card-left {
+  text-align: left;
+}
+
+.language-card-left h3 {
+  text-align: left;
+}
+
+.language-card-left ul {
+  padding-left: 1.2rem;
+}
+
+.language-card-left li {
+  text-align: left;
+}
+
+.lang-meta {
+  display: block;        /* forces next line */
+  font-size: 0.85em;     /* smaller than title */
+  font-weight: 400;
+  opacity: 0.8;
+  margin-top: 0.2rem;
+}
+
+.language-card ul {
+  font-size: 0.95rem;
+}
+
+.language-card li {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* ---------------------------
+    4. FOOTER & BACK TO TOP
+--------------------------- */
+footer {
+  background: var(--bg-light);
+  color: var(--text);
+  padding: clamp(30px, 5vw, 40px) 0;
+  margin-top: clamp(60px, 10vw, 80px);
+}
+
+.footer-row {
+  max-width: 1400px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 clamp(15px, 4vw, 20px);
+}
+
+.footer-center {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 3vw, 20px);
+}
+
+.footer-center img {
+  width: clamp(24px, 7vw, 32px);
+  height: clamp(24px, 7vw, 32px);
+  transition: 0.2s ease;
+}
+
+[data-theme="dark"] .footer-center img { filter: brightness(0) invert(1); }
+[data-theme="dark"] .footer-center img[src*="white"] { filter: none; }
+
+#back-to-top {
+  position: fixed;
+  bottom: clamp(20px, 4vw, 30px);
+  right: clamp(20px, 4vw, 30px);
+  width: clamp(40px, 10vw, 45px);
+  height: clamp(40px, 10vw, 45px);
+  background-color: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: 50%;
+  font-size: clamp(1.2rem, 4vw, 1.5rem);
+  font-weight: bold;
+>>>>>>> parent of 119b754 (80's skin)
   cursor: pointer;
 }
 
@@ -290,6 +377,15 @@ footer {
   font-size: 1.4rem;
   display: none;
   cursor: pointer;
+<<<<<<< HEAD
+=======
+  color: var(--text);
+  opacity: 0.03; /* Hard to see by default */
+  transition: opacity 0.5s ease, color 0.3s ease;  vertical-align: middle;
+  display: flex;
+  align-items: center;
+  filter: blur(0.3px); /* Slightly fuzzy to look like a smudge */
+>>>>>>> parent of 119b754 (80's skin)
 }
 
 /* ===========================

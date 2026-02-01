@@ -744,16 +744,17 @@ footer {
   background: none;
   border: none;
   padding: 0;
-  margin-left: 10px;
+  margin-left: 15px;
   cursor: pointer;
   color: var(--text);
-  opacity: 0.15; /* Hard to see by default */
+  opacity: 0.1; /* Hard to see by default */
   transition: all 0.3s ease;
   vertical-align: middle;
+  align-items: center;
 }
 
 #retro-toggle:hover {
-  opacity: 1;
+  opacity: 0.8;
   color: #00FF41; /* Green hint on hover */
 }
 
@@ -761,7 +762,7 @@ footer {
 #retro-toggle.active {
   opacity: 1;
   color: #00FF41;
-  filter: drop-shadow(0 0 5px #00FF41);
+  filter: drop-shadow(0 0 8px #00FF41);
   animation: crt-flicker 0.1s infinite;
 }
 
@@ -809,13 +810,13 @@ footer {
 
 /* 4. IMAGE HANDLING */
 /* Converts images to a high-contrast green "phosphor" look */
-[data-skin="retro"] img {
+/* [data-skin="retro"] img {
   filter: grayscale(1) brightness(0.8) contrast(1.5) sepia(1) hue-rotate(70deg) saturate(5);
   opacity: 0.8;
 }
 
-/* Optional: If you'd rather hide icons/images entirely, use this instead: */
-/* [data-skin="retro"] img { display: none; } */
+/* To hide icons/images entirely, use this instead: */
+[data-skin="retro"] img { display: none; } */
 
 [data-skin="retro"] .language-card {
   border: 1px solid #00FF41;

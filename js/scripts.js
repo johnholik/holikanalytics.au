@@ -278,3 +278,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
+
+/* ===============================
+    Retro Skin Toggle
+=============================== */
+const retroToggle = document.getElementById('retro-toggle');
+const htmlElement = document.documentElement;
+
+// Check for saved preference
+const currentSkin = localStorage.getItem('skin');
+if (currentSkin === 'retro') {
+  htmlElement.setAttribute('data-skin', 'retro');
+}
+
+if (retroToggle) {
+  retroToggle.addEventListener('click', () => {
+    const isRetro = htmlElement.getAttribute('data-skin') === 'retro';
+    
+    if (isRetro) {
+      htmlElement.removeAttribute('data-skin');
+      localStorage.setItem('skin', 'default');
+    } else {
+      htmlElement.setAttribute('data-skin', 'retro');
+      localStorage.setItem('skin', 'retro');
+    }
+  });
+}

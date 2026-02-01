@@ -727,3 +727,70 @@ footer {
 .poster-preview img.zoomed {
   cursor: zoom-out;
 }
+
+/* 1. RETRO VARIABLES */
+[data-skin="retro"] {
+  --bg: #000000;
+  --bg-light: #050505;
+  --text: #00FF41; /* Classic Matrix/Terminal Green */
+  --accent: #00FF41;
+  --accent-dark: #008F11;
+  font-family: 'Courier New', Courier, monospace !important;
+}
+
+/* 2. RETRO BUTTON STYLING (Bottom Left) */
+#retro-toggle {
+  position: fixed;
+  bottom: clamp(20px, 4vw, 30px);
+  left: clamp(20px, 4vw, 30px); /* Opposite of the up arrow */
+  width: clamp(40px, 10vw, 45px);
+  height: clamp(40px, 10vw, 45px);
+  background-color: #000;
+  color: #00FF41;
+  border: 2px solid #00FF41;
+  border-radius: 4px; /* Blocky look */
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 0.8rem;
+  cursor: pointer;
+  z-index: 1001;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#retro-toggle:hover {
+  background-color: #00FF41;
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+}
+
+/* 3. RETRO SKIN SPECIFIC OVERRIDES */
+[data-skin="retro"] body::before {
+  /* Subtle Scanline Effect */
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+              linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 0, 0.06));
+  z-index: 9999;
+  background-size: 100% 4px, 3px 100%;
+  pointer-events: none;
+}
+
+/* 4. IMAGE HANDLING */
+/* Converts images to a high-contrast green "phosphor" look */
+[data-skin="retro"] img {
+  filter: grayscale(1) brightness(0.8) contrast(1.5) sepia(1) hue-rotate(70deg) saturate(5);
+  opacity: 0.8;
+}
+
+/* Optional: If you'd rather hide icons/images entirely, use this instead: */
+/* [data-skin="retro"] img { display: none; } */
+
+[data-skin="retro"] .language-card {
+  border: 1px solid #00FF41;
+  background: transparent;
+}

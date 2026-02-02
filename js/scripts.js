@@ -10,33 +10,76 @@ document.addEventListener('DOMContentLoaded', () => {
     menuButton.addEventListener('click', () => {
       mobileNav.classList.toggle('open');
       const expanded = menuButton.getAttribute('aria-expanded') === 'true';
-      menuButton.setAttribute('aria-expanded', String(!expanded));    
+      menuButton.setAttribute('aria-expanded', String(!expanded));
     });
   }
 
   /* ===============================
-      Dark Mode Toggle
+      Theme Toggle (Light / Dark)
   =============================== */
   const themeToggle = document.getElementById('theme-toggle');
   const themeIcon   = document.getElementById('theme-icon');
   const root        = document.documentElement;
 
-  if (themeToggle && themeIcon) {
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    root.setAttribute('data-theme', currentTheme);
-    themeIcon.src = currentTheme === 'dark'
-      ? 'assets/icons/sun.svg'
-      : 'assets/icons/moon.svg';
+  const storedTheme = localStorage.getItem('theme') || 'light';
+  root.setAttribute('data-theme', storedTheme);
 
+  if (themeIcon) {
+    themeIcon.src =
+      storedTheme === 'dark'
+        ? 'assets/icons/sun.svg'
+        : 'assets/icons/moon.svg';
+  }
+
+  if (themeToggle && themeIcon) {
     themeToggle.addEventListener('click', () => {
-      const isDark = root.getAttribute('data-theme') === 'dark';
-      const newTheme = isDark ? 'light' : 'dark';
+      const current = root.getAttribute('data-theme');
+      const newTheme = current === 'dark' ? 'light' : 'dark';
 
       root.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
-      themeIcon.src = newTheme === 'dark'
-        ? 'assets/icons/sun.svg'
-        : 'assets/icons/moon.svg';
+
+      themeIcon.src =
+        newTheme === 'dark'
+          ? 'assets/icons/sun.svg'
+          : 'assets/icons/moon.svg';
+    });
+  }
+
+  /* ===============================
+      CRT / 1980s Easter Egg Mode
+  =============================== */
+  const crtToggle = document.getElementById('crt-toggle');
+
+  if (crtToggle) {
+    // Restore CRT state
+    if (localStorage.getItem('crt-mode') === 'on') {
+      root.setAttribute('data-theme', 'crt');
+    }
+
+    crtToggle.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const currentTheme = root.getAttribute('data-theme');
+
+      if (currentTheme === 'crt') {
+        // Exit CRT → fall back to light
+        root.setAttribute('data-theme', 'light');
+        localStorage.setItem('crt-mode', 'off');
+        localStorage.setItem('theme', 'light');
+      } else {
+        // Enter CRT
+        root.setAttribute('data-theme', 'crt');
+        localStorage.setItem('crt-mode', 'on');
+        localStorage.setItem('theme', 'crt');
+      }
+
+      console.log(
+        root.getAttribute('data-theme') === 'crt'
+          ? '📺 CRT MODE ENGAGED'
+          : '🧼 CRT MODE DISENGAGED'
+      );
     });
   }
 
@@ -73,141 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     revealElements.forEach(el => revealObserver.observe(el));
   }
-
-  /* ===============================
-      Poster Preview Logic
-      - Tap text = open
-      - Tap image = zoom/toggle
-      - Tap background/anywhere else = close
-  =============================== */
-
-  let activePoster = null;
-
-  // Helper function to close any open poster
-  const closeActivePoster = () => {
-    if (activePoster) {
-      activePoster.classList.remove('locked');
-      const img = activePoster.querySelector('img');
-      if (img) {
-        img.style.transform = '';
-        img.classList.remove('zoomed');
-        // Reset the custom zoom properties we added to the element
-        img.dataset.scale = "1";
-        img.dataset.translateX = "0";
-        img.dataset.translateY = "0";
-      }
-      activePoster = null;
-    }
-  };
-
-  // 1. OPEN LOGIC
-  document.querySelectorAll('.poster-trigger').forEach(trigger => {
-    trigger.addEventListener('click', e => {
-      const preview = trigger.querySelector('.poster-preview');
-      if (!preview) return;
-
-      // If clicking the text and it's not already open
-      if (!preview.classList.contains('locked')) {
-        e.preventDefault();
-        e.stopPropagation();
-        closeActivePoster(); // Close any others first
-        preview.classList.add('locked');
-        activePoster = preview;
-      }
-    });
-  });
-
-  // 2. CLOSE LOGIC (Clicking anywhere on the document)
-  document.addEventListener('click', (e) => {
-    if (activePoster) {
-      // If the click is NOT on the image itself, close it
-      if (!e.target.closest('.poster-preview img')) {
-        closeActivePoster();
-      }
-    }
-  });
-
-  // ESC key closes
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && activePoster) {
-      closeActivePoster();
-    }
-  });
-
-  /* ===============================
-      Poster Image Zoom + Pan
-  =============================== */
-  document.querySelectorAll('.poster-preview img').forEach(img => {
-    // Store state on the element to prevent scope issues
-    img.dataset.scale = "1";
-    img.dataset.translateX = "0";
-    img.dataset.translateY = "0";
-    let isDragging = false;
-    let startX = 0, startY = 0;
-
-    const applyTransform = () => {
-      img.style.transform =
-        `translate(${img.dataset.translateX}px, ${img.dataset.translateY}px) scale(${img.dataset.scale})`;
-    };
-
-    // Zoom Toggle on Click
-    img.addEventListener('click', e => {
-      e.stopPropagation(); // Prevents the 'document' click listener from closing it
-
-      let scale = parseFloat(img.dataset.scale);
-      
-      if (scale === 1) {
-        img.dataset.scale = "2";
-        img.classList.add('zoomed');
-      } else {
-        img.dataset.scale = "1";
-        img.dataset.translateX = "0";
-        img.dataset.translateY = "0";
-        img.classList.remove('zoomed');
-      }
-      applyTransform();
-    });
-
-    // Drag / Pan Logic
-    img.addEventListener('mousedown', e => {
-      if (img.dataset.scale === "1") return;
-      isDragging = true;
-      startX = e.clientX - parseFloat(img.dataset.translateX);
-      startY = e.clientY - parseFloat(img.dataset.translateY);
-      img.style.cursor = 'grabbing';
-    });
-
-    document.addEventListener('mousemove', e => {
-      if (!isDragging) return;
-      img.dataset.translateX = (e.clientX - startX).toString();
-      img.dataset.translateY = (e.clientY - startY).toString();
-      applyTransform();
-    });
-
-    document.addEventListener('mouseup', () => {
-      isDragging = false;
-      if(img.classList.contains('zoomed')) img.style.cursor = 'grab';
-    });
-
-    // Touch support for Panning
-    img.addEventListener('touchstart', e => {
-        if (img.dataset.scale === "1") return;
-        isDragging = true;
-        startX = e.touches[0].clientX - parseFloat(img.dataset.translateX);
-        startY = e.touches[0].clientY - parseFloat(img.dataset.translateY);
-    }, {passive: true});
-
-    img.addEventListener('touchmove', e => {
-        if (!isDragging) return;
-        img.dataset.translateX = (e.touches[0].clientX - startX).toString();
-        img.dataset.translateY = (e.touches[0].clientY - startY).toString();
-        applyTransform();
-    }, {passive: true});
-
-    img.addEventListener('touchend', () => {
-        isDragging = false;
-    });
-  });
 
   /* ===============================
       ORCID Publications Fetch

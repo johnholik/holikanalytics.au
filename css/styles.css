@@ -727,3 +727,159 @@ footer {
 .poster-preview img.zoomed {
   cursor: zoom-out;
 }
+
+/* =========================================================
+   9. CRT "JELLYBEAN" THEME (Hidden Easter Egg)
+========================================================= */
+
+/* --- CRT variables --- */
+[data-theme="crt"] {
+  --bg: #000000;
+  --bg-light: #020202;
+  --text: #7CFF7C;
+  --accent: #66ff66;
+  --accent-dark: #33cc33;
+}
+
+/* --- CRT font --- */
+@font-face {
+  font-family: "VT323";
+  src: url("https://fonts.gstatic.com/s/vt323/v17/pxiKyp0ihIEF2hsYHpT2dkNE.ttf");
+}
+
+[data-theme="crt"] body {
+  font-family: "VT323", monospace;
+  letter-spacing: 0.04em;
+  font-size: 1.05em;
+}
+
+/* --- Subtle phosphor glow --- */
+[data-theme="crt"] * {
+  text-shadow:
+    0 0 2px rgba(124,255,124,0.35),
+    0 0 6px rgba(124,255,124,0.15);
+}
+
+/* --- Links --- */
+[data-theme="crt"] a {
+  color: var(--accent);
+}
+
+[data-theme="crt"] a:hover {
+  text-shadow: 0 0 10px rgba(124,255,124,0.6);
+}
+
+/* --- Images: low-res CRT look --- */
+[data-theme="crt"] img {
+  filter:
+    grayscale(100%)
+    contrast(1.25)
+    brightness(0.9)
+    saturate(0)
+    blur(0.25px);
+  image-rendering: pixelated;
+}
+
+/* --- Scanlines overlay --- */
+[data-theme="crt"]::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.15),
+      rgba(0,0,0,0.15) 1px,
+      transparent 2px,
+      transparent 4px
+    );
+  z-index: 9999;
+  mix-blend-mode: overlay;
+}
+
+/* =========================================================
+   CRT TOGGLE BUTTON (Footer Jellybean)
+========================================================= */
+
+#crt-toggle {
+  width: 26px;
+  height: 18px;
+  border-radius: 3px 3px 6px 6px;
+  background:
+    linear-gradient(#111, #050505);
+  border: 1px solid rgba(124,255,124,0.15);
+  opacity: 0.12;
+  cursor: pointer;
+  position: relative;
+  transition: opacity 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* CRT "screen" */
+#crt-toggle::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 2px;
+  background: rgba(124,255,124,0.15);
+}
+
+/* Hover reveal */
+#crt-toggle:hover {
+  opacity: 0.5;
+  box-shadow:
+    0 0 6px rgba(124,255,124,0.4),
+    0 0 12px rgba(124,255,124,0.2);
+}
+
+/* Active CRT state */
+[data-theme="crt"] #crt-toggle {
+  opacity: 0.9;
+  box-shadow:
+    0 0 10px rgba(124,255,124,0.6),
+    0 0 25px rgba(124,255,124,0.3);
+}
+
+/* Mobile spacing safety */
+@media (max-width: 800px) {
+  #crt-toggle {
+    margin: 6px 0;
+  }
+}
+
+/* =========================================================
+   CRT Toggle – Responsive Positioning
+========================================================= */
+
+/* Desktop / default */
+#crt-toggle {
+  margin: 0 auto; /* keeps it centered in footer */
+}
+
+/* Make mobile version vertical spacing of Name and Social Icons smaller */
+@media (max-width: 800px) {
+  .footer-row {
+    gap: 0.25rem;
+  }
+}
+
+/* =========================================================
+   CRT Toggle – Fixed Above Back-to-Top (Mobile)
+========================================================= */
+
+@media (max-width: 800px) {
+  #crt-toggle {
+    position: fixed;             /* float above page */
+    z-index: 1002;               /* above back-to-top */
+    right: clamp(20px, 4vw, 30px);  /* align with back-to-top */
+    bottom: calc(clamp(20px, 4vw, 30px) + 60px); /* space above back-to-top */
+    margin: 0;                   /* reset any flex margins */
+    cursor: pointer;
+    transition: opacity 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+  }
+
+  /* Optional: small hover lift effect on mobile */
+  #crt-toggle:hover {
+    transform: translateY(-2px);
+  }
+}

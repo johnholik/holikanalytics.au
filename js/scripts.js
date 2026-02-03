@@ -155,6 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const title = work.title?.title?.value || 'Untitled';
         const year = work['publication-date']?.year?.value || '';
         const journal = work['journal-title']?.value || '';
+		const volume = work['journal-issue']?.['journal-volume']?.value || '';
+		const issue  = work['journal-issue']?.['journal-issue']?.value || '';
 
         const contributors = work.contributors?.contributor || [];
         const authors = contributors
@@ -168,11 +170,20 @@ document.addEventListener('DOMContentLoaded', () => {
           .filter(Boolean);
 
         const li = document.createElement('li');
-        li.innerHTML =
-          `${authors.join(', ')}. ` +
-          `${year ? '(' + year + '). ' : ''}` +
-          `${title}. <em>${journal}</em>.`;
 
+		let volIssue = '';
+		if (volume && issue) {
+		  volIssue = `${volume}(${issue})`;
+		} else if (volume) {
+		  volIssue = volume;
+		}
+
+        li.innerHTML =
+		  `${authors.join(', ')}. ` +
+		  `${year ? '(' + year + '). ' : ''}` +
+		  `${title}. <em>${journal}</em>` +
+		  `${volIssue ? ', ' + volIssue : ''}.`;
+  
         orcidList.appendChild(li);
       }
 

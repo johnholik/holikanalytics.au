@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* ===============================
+/* ===============================
       ORCID Publications Fetch
   =============================== */
   const ORCID_ID = '0009-0009-9741-0025';
@@ -185,75 +185,75 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (orcidList) {
     fetch(`https://pub.orcid.org/v3.0/${ORCID_ID}/works`, {
-      headers: { Accept: 'application/json' }
+      headers: { 'Accept': 'application/json' }
     })
     .then(res => res.json())
     .then(async data => {
+      const groups = data.group || [];
+      if (groups.length === 0) {
+        orcidList.innerHTML = '<li>No publications found.</li>';
+        return;
+      }
 
-      orcidList.innerHTML = '';
-      const works = data.group || [];
+      // 1. Get all put-codes
+      const putCodes = groups.map(g => g['work-summary'][0]['put-code']);
 
-      for (const group of works) {
-        const summary = group['work-summary'][0];
-        const putCode = summary['put-code'];
+      // 2. Fetch all details in parallel (much faster)
+      const detailsPromises = putCodes.map(code => 
+        fetch(`https://pub.orcid.org/v3.0/${ORCID_ID}/work/${code}`, {
+          headers: { 'Accept': 'application/json' }
+        }).then(res => res.json())
+      );
 
-        const res = await fetch(
-          `https://pub.orcid.org/v3.0/${ORCID_ID}/work/${putCode}`,
-          { headers: { Accept: 'application/json' } }
-        );
+      const allWorks = await Promise.all(detailsPromises);
+      orcidList.innerHTML = ''; // Clear loading
 
-        const work = await res.json();
+      allWorks.forEach(work => {
+        const allowedTypes = ['journal-article', 'review', 'research-article'];
+        if (!allowedTypes.includes(work.type)) return;
 
-        const allowedTypes = [
-          'journal-article',
-          'review',
-          'research-article'
-        ];
-
-        if (!allowedTypes.includes(work.type)) continue;
-
+        // Data extraction
         const title = work.title?.title?.value || 'Untitled';
-        const year = work['publication-date']?.year?.value || '';
         const journal = work['journal-title']?.value || '';
-		const volume = work['journal-issue']?.['journal-volume']?.value || '';
-		const issue  = work['journal-issue']?.['journal-issue']?.value || '';
+        const year = work['publication-date']?.year?.value || '';
+        const vol = work['journal-issue']?.['journal-volume']?.value;
+        const issue = work['journal-issue']?.['issue']?.value;
+        
+        // Volume/Issue Formatting
+        let bibInfo = "";
+        if (vol) bibInfo += `, Vol. ${vol}`;
+        if (issue) bibInfo += `, No. ${issue}`;
 
-        const contributors = work.contributors?.contributor || [];
-        const authors = contributors
+        // DOI Extraction
+        const exIds = work['external-ids']?.['external-id'] || [];
+        const doiObj = exIds.find(id => id['external-id-type'] === 'doi');
+        const doiValue = doiObj ? doiObj['external-id-value'] : null;
+
+        // Author Formatting
+        const authors = (work.contributors?.contributor || [])
           .map(c => {
             const name = c['credit-name']?.value || '';
-            if (!name) return '';
-            return name.toLowerCase().includes('holik')
-              ? `<strong>${name}</strong>`
-              : name;
+            return name.toLowerCase().includes('holik') ? `<strong>${name}</strong>` : name;
           })
-          .filter(Boolean);
+          .filter(Boolean)
+          .join(', ');
 
+        // HTML Creation
         const li = document.createElement('li');
+        li.style.marginBottom = "15px";
+        let htmlContent = `${authors}. ${year ? '(' + year + '). ' : ''}"${title}." <em>${journal}</em>${bibInfo}.`;
+        
+        if (doiValue) {
+          htmlContent += ` DOI: <a href="https://doi.org/${doiValue}" target="_blank" style="word-break: break-all;">${doiValue}</a>`;
+        }
 
-		let volIssue = '';
-		if (volume && issue) {
-		  volIssue = `${volume}(${issue})`;
-		} else if (volume) {
-		  volIssue = volume;
-		}
-
-        li.innerHTML =
-		  `${authors.join(', ')}. ` +
-		  `${year ? '(' + year + '). ' : ''}` +
-		  `${title}. <em>${journal}</em>` +
-		  `${volIssue ? ', ' + volIssue : ''}.`;
-  
+        li.innerHTML = htmlContent;
         orcidList.appendChild(li);
-      }
-
-      if (!works.length) {
-        orcidList.innerHTML = '<li>No publications found.</li>';
-      }
+      });
     })
-    .catch(() => {
+    .catch(err => {
+      console.error("ORCID Error:", err);
       orcidList.innerHTML = '<li>Unable to load publications.</li>';
     });
   }
-
-});
+}); // End of single DOMContentLoaded

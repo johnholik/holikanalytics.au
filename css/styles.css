@@ -70,10 +70,11 @@ header {
 .nav-links a { color: var(--accent); text-decoration: none; font-weight: 600; }
 
 .header-controls {
-  order: 3; }
+  order: 3;
   display: flex;
   align-items: center;
-  gap: clamp(10px, 2vw, 15px);}
+  gap: clamp(10px, 2vw, 15px);
+}
 
 #theme-toggle {
   background: var(--bg-light);
@@ -169,19 +170,29 @@ main {
   gap: 2rem; /* Adds space between the intro text and the content below */
 }
 
-/* Add this new class for the intro text style */
+/* COMBINED SECTION-INTRO */
+
 .section-intro {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1000px;    /* Keeps text lines readable */
   margin: 0 auto;
+  text-align: center;
   font-size: 1.15rem;
   font-weight: 500;
-  color: var(--accent); /* Highlights the intro in your brand color */
-  border-left: 4px solid var(--accent); /* Optional: Adds a nice vertical accent line */
-  padding-left: 20px;
   line-height: 1.5;
+  color: var(--text);
+  opacity: 0.8;
+  font-style: italic;   /* The researcher touch */
 }
 
+/* Style the image inside the intro block */
+.section-intro .intro-image {
+  display: block;
+  width: 250px;
+  height: auto;
+  border-radius: 12px;
+  margin: 0 0 20px 0; /* Aligns left with a gap below */
+}
 .section-content { 
   display: flex; 
   gap: clamp(20px, 4vw, 40px); 
@@ -197,26 +208,6 @@ main {
 
 .section-image { 
   flex: 1.1; 
-}
-
-.section-intro {
-  width: 100%;
-  max-width: 1000px; /* Narrower max-width often looks better for centered text */
-  margin: 0 auto;
-  
-  /* The Magic Lines */
-  text-align: center; 
-  padding-left: 0;      /* Remove the padding we added earlier */
-  border-left: none;    /* Remove the vertical line (doesn't look right centered) */
-  
-  font-size: 1.15rem;
-  font-weight: 500;
-  line-height: 1.5;
-  
-  /* ... other styles ... */
-  color: var(--text);
-  opacity: 0.8; /* Makes it slightly see-through/dimmer */
-  font-style: italic; /* Adds a nice researcher-style touch */
 }
 
 .section-text { 
@@ -917,4 +908,35 @@ footer {
   #crt-toggle:hover {
     transform: translateY(-2px);
   }
+}
+
+/* --- Bio Specific Centering --- */
+
+#bio .section-content {
+  justify-content: center; /* Centers the content block horizontally */
+}
+
+#bio .section-text {
+  flex: 0 0 100% !important;   /* Overrides the 70% width rule */
+  max-width: 800px !important; /* Prevents text from becoming too wide to read */
+  text-align: center;          /* Centers the headings and paragraphs */
+  margin: 0 auto;              /* Centers the block itself */
+}
+
+#bio .section-text ul {
+  display: inline-block;       /* Allows the list to be centered as a block */
+  text-align: left;            /* Keeps the bullet points left-aligned for readability */
+  max-width: 100%;             /* Ensures it doesn't overflow */
+}
+
+#bio .intro-image {
+  margin: 0 auto 20px auto !important; /* Centers the headshot in the intro */
+}
+
+/* --- Global Visibility Safety --- */
+/* Forces Languages and Publications to be visible */
+.reveal {
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
 }

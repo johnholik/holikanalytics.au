@@ -163,8 +163,23 @@ main {
 
 .section { 
   display: flex; 
-  margin: clamp(120px, 12vw, 160px) 0; 
+  flex-direction: column; /* Stack intro on top of content */
   align-items: center; 
+  margin: clamp(120px, 12vw, 160px) 0; 
+  gap: 2rem; /* Adds space between the intro text and the content below */
+}
+
+/* Add this new class for the intro text style */
+.section-intro {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--accent); /* Highlights the intro in your brand color */
+  border-left: 4px solid var(--accent); /* Optional: Adds a nice vertical accent line */
+  padding-left: 20px;
+  line-height: 1.5;
 }
 
 .section-content { 
@@ -182,6 +197,26 @@ main {
 
 .section-image { 
   flex: 1.1; 
+}
+
+.section-intro {
+  width: 100%;
+  max-width: 1000px; /* Narrower max-width often looks better for centered text */
+  margin: 0 auto;
+  
+  /* The Magic Lines */
+  text-align: center; 
+  padding-left: 0;      /* Remove the padding we added earlier */
+  border-left: none;    /* Remove the vertical line (doesn't look right centered) */
+  
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 1.5;
+  
+  /* ... other styles ... */
+  color: var(--text);
+  opacity: 0.8; /* Makes it slightly see-through/dimmer */
+  font-style: italic; /* Adds a nice researcher-style touch */
 }
 
 .section-text { 

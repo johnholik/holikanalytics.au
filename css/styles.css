@@ -688,70 +688,55 @@ footer {
   background: rgba(77, 182, 172, 0.28);
 }
 
-/* Poster preview */
-.poster-preview {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease;
-  z-index: 9999;
-}
-
-.poster-preview img {
-  max-width: 85vw;
-  max-height: 85vh;
-  border-radius: 8px;
-  box-shadow: 0 0 50px rgba(0,0,0,0.7);
-  transform: scale(0.8);
-  transition: transform 0.5s ease;
-}
-
-/* Hover preview */
-.poster-trigger:hover .poster-preview {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.poster-trigger:hover .poster-preview img {
-  transform: scale(1);
-}
-
-/* Locked mode */
-.poster-preview.locked {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.poster-preview.locked img {
-  transform: scale(1);
-}
-
+/* --- Poster Trigger & Preview --- */
 .poster-trigger {
   color: var(--accent);
   cursor: zoom-in;
   font-weight: 500;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
+  position: relative;
 }
 
-.poster-trigger:hover {
-  color: #9ff;
-  text-shadow: 0 0 6px rgba(160,255,255,0.4);
+.poster-preview {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: none; 
+  z-index: 10000;
+  /* Remove flex properties here so block layout takes over when locked */
+}
+
+.poster-preview.locked {
+  display: block !important; 
+  overflow: auto;            /* This is the key for panning */
+  -webkit-overflow-scrolling: touch; 
+  cursor: zoom-out;
 }
 
 .poster-preview img {
+  display: block;
+  margin: 20px auto;        /* Centers the image while allowing top/bottom margin */
+  max-width: 90vw;
+  max-height: 90vh;
+  transition: width 0.3s ease-out, height 0.3s ease-out; /* Smooth growth */
   cursor: zoom-in;
-  transition: transform 0.3s ease;
-  user-select: none;
+  object-fit: contain;
 }
 
+/* THE ZOOM: Using width/height to force scrollbars */
 .poster-preview img.zoomed {
+  max-width: none;
+  max-height: none;
+  width: 180%;              /* Forces width larger than viewport */
+  height: auto;
+  margin: 0;                /* Aligns to corner so you can pan from the start */
   cursor: zoom-out;
+}
+
+/* For very small screens, make the zoom even more dramatic */
+@media (max-width: 600px) {
+  .poster-preview img.zoomed {
+    width: 250%; 
+  }
 }
 
 /* =========================================================

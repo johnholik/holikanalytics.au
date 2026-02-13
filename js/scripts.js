@@ -109,13 +109,73 @@ document.addEventListener('DOMContentLoaded', () => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('in-view');
-          revealObserver.unobserve(entry.target);
+          // Keep it observed if you want it to fade in every time, 
+          // or keep unobserve if you want it to happen only once:
+          revealObserver.unobserve(entry.target); 
         }
       });
     }, { threshold: 0.15 });
 
     revealElements.forEach(el => revealObserver.observe(el));
   }
+
+/* =========================================================
+     POSTER SYSTEM: Zoom & Escape Logic
+  ========================================================= */
+  const posterTriggers = document.querySelectorAll('.poster-trigger');
+
+  posterTriggers.forEach(trigger => {
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const preview = this.querySelector('.poster-preview');
+      const img = preview ? preview.querySelector('img') : null;
+      if (!preview || !img) return;
+
+      // Open the overlay
+      preview.classList.add('locked');
+      document.body.style.overflow = 'hidden';
+
+      // Close function (Used by Esc, Back Button, and Clicks)
+      const closePoster = () => {
+        preview.classList.remove('locked');
+        img.classList.remove('zoomed');
+        document.body.style.overflow = '';
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+
+      // Desktop: Escape Key to exit
+      const handleKeyDown = (event) => {
+        if (event.key === 'Escape') closePoster();
+      };
+      window.addEventListener('keydown', handleKeyDown);
+
+      // Mobile: Handle hardware back button
+      window.history.pushState({poster: true}, '');
+      window.onpopstate = () => closePoster();
+
+	  // Click/Tap Logic
+      preview.onclick = (event) => {
+        event.stopPropagation();
+        
+        if (event.target === img) {
+          // If it's already zoomed, we zoom out
+          if (img.classList.contains('zoomed')) {
+             img.classList.remove('zoomed');
+             // Reset scroll position to top when zooming out
+             preview.scrollTo(0, 0); 
+          } else {
+             img.classList.add('zoomed');
+          }
+        } else {
+          // Clicked the background (black area)
+          closePoster();
+          if (window.history.state?.poster) window.history.back();
+        }
+      };
+    });
+  });
 
   /* ===============================
       ORCID Publications Fetch
